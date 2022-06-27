@@ -11,20 +11,18 @@
 
 // ARRAY PRODUCTOS
 const products = [
-    {id:1, title:'Funko Pop de Goku', price: 1500, stock: true},
-    {id:2, title:'Carta de Charizard', price: 2000, stock: true},
-    {id:3, title:'Carta de Pikachu', price: 500, stock: false},
-    {id:4, title:'Figura a escala de Broly', price: 4000, stock: true}
+    {id:1, title:'Funko Pop de Goku', price: 1500, stock: true, category: 'figure'},
+    {id:2, title:'Carta de Charizard', price: 2000, stock: true, category: 'card'},
+    {id:3, title:'Carta de Pikachu', price: 500, stock: false, category: 'card'},
+    {id:4, title:'Figura a escala de Broly', price: 4000, stock: true, category: 'figure'}
 ];
 
 const cartProducts = [];
 
-
 // GENERADOR CARDS
+const generateCards = (arrayFiltered) => {
 let generatorCards = ``;
-
-const acumuladorCards = () => {
-    products.forEach((product) => {
+arrayFiltered.forEach((product) => {
     generatorCards +=`    <div class="col mb-5">
     <div class="card h-100">
         <!-- Product image-->
@@ -40,16 +38,15 @@ const acumuladorCards = () => {
         </div>
         <!-- Product actions-->
         <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-            <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#" onclick="addToCart(${product.id})">Agregar al carrito</a></div>
-            <div class="text-center"><a class="btn btn-outline-dark mt-auto" href="#" onclick="removeFromCart(${product.id})">Eliminar del carrito</a></div>
+            <div class="text-center"><a class="btn btn-outline-dark mt-auto btn_add-cart" href="#" onclick="addToCart(${product.id})">Agregar al carrito</a></div>
+            <div class="text-center"><a class="btn btn-outline-dark mt-auto btn_remove-cart" href="#" onclick="removeFromCart(${product.id})">Eliminar del carrito</a></div>
         </div>
     </div>
 </div>`;
 })
-}
-
-acumuladorCards();
 document.getElementById('container-products').innerHTML = generatorCards;
+};
+generateCards(products);
 
 // FUNCION AGREGAR UN product AL CARRTTO
 const addToCart = (productId) =>{
@@ -58,6 +55,8 @@ const addToCart = (productId) =>{
         cartProducts.push(products[foundIndex]);
         console.log (`Agregaste "${products[foundIndex].title}" al carrito! :D`);
         console.log (`Tenés ${cartProducts.length} productos en el carrito`);
+        const cartTotalAmount = cartProducts.reduce ((sum, product) => sum + product.price, 0);
+        document.getElementById('cart-string').innerHTML = `${cartProducts.length} - $${cartTotalAmount}`
     } else {
         console.log(`No tenemos stock de "${products[foundIndex].title}" :/`)
     }
@@ -76,6 +75,7 @@ const removeFromCart = (cartProductId) => {
     }
 };
 
+
 //  TODO: FUNCION ORDENAR DE MAYOR A MENOR PRECIO
 /* const orderByPriceHigher = () => {
     products.sort = () => {
@@ -90,17 +90,9 @@ const removeFromCart = (cartProductId) => {
     }
 }; */
 
-// FUNCION FILTRAR POR STOCK TRUE
-const filterByStock = () => {
-    const stockTrue = products.filter ((product) => product.stock === true);
-    console.log(`Hay ${stockTrue.length} productos en stock:`);
-    stockTrue.forEach ((product) => {
-        console.log(product.title)
-    })
-};
-
-//FUNCION MOSTRAR PRODUCTOS EN EL CARRITO
-const showCartProducts = () => {
+// FUNCION MOSTRAR PRODUCTOS EN EL CARRITO
+const btnShowCart = document.getElementById('btn_show-cart')
+btnShowCart.onclick = () => {
     console.log ('Estos son los productos que tenés en el carrito:');
     cartProducts.forEach((product) => {
         console.log(`${product.title} - $${product.price}`)
@@ -108,3 +100,18 @@ const showCartProducts = () => {
     const cartTotalAmount = cartProducts.reduce ((sum, product) => sum + product.price, 0)
     console.log (`El total de tu carrito es de $${cartTotalAmount}`)
 };
+
+/* FUNCION FILTRAR POR CATEGORIAS */
+const filterByCategory = (category) => {
+    const categoryArray = products.filter((product) => product.category == category)
+    generateCards(categoryArray)
+}
+
+const categoryAll = document.getElementById('category_all')
+categoryAll.onclick = () => {generateCards(products)}
+
+const categoryCards = document.getElementById('category_cards')
+categoryCards.onclick = () => {filterByCategory('card')}
+
+const categoryFigures = document.getElementById('category_figures')
+categoryFigures.onclick = () => {filterByCategory('figure')}
