@@ -1,3 +1,25 @@
-#marginimportant {
-  margin-left: 10px !important;
+#marginleft {
+  margin-left: 10px;
+}
+
+#accountModalContent {
+  margin: 0 auto;
+  width: 75%;
+}
+
+.modal_input {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.leyenda {
+  font-size: 14px;
+  margin-bottom: 0px;
+}
+
+.error_login {
+  font-size: 14px;
+  color: red;
+  font-weight: 500;
+  margin-bottom: 5px;
 }
