@@ -17,7 +17,13 @@ const products = [
     {id:4, title:'Figura a escala de Broly', price: 4000, stock: true, category: 'figure'}
 ];
 
-const cartProducts = [];
+const cartStorage = localStorage.getItem('cart');
+
+const cart = JSON.parse(cartStorage) ?? [];
+
+const cartTotalAmountStart = cart.reduce ((sum, product) => sum + product.price, 0);
+
+document.getElementById('cart-string').innerHTML = `${cart.length} - $${cartTotalAmountStart}`;
 
 // GENERADOR CARDS
 const generateCards = (arrayFiltered) => {
@@ -38,7 +44,7 @@ arrayFiltered.forEach((product) => {
         </div>
         <!-- Product actions-->
         <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-            <div class="text-center"><a class="btn btn-outline-dark mt-auto btn_add-cart" href="#" onclick="addToCart(${product.id})">Agregar al carrito</a></div>
+            <div class="text-center"><a class="btn btn-outline-dark mt-auto mb-2 btn_add-cart" href="#" onclick="addToCart(${product.id})">Agregar al carrito</a></div>
             <div class="text-center"><a class="btn btn-outline-dark mt-auto btn_remove-cart" href="#" onclick="removeFromCart(${product.id})">Eliminar del carrito</a></div>
         </div>
     </div>
@@ -52,11 +58,11 @@ generateCards(products);
 const addToCart = (productId) =>{
     const foundIndex = products.findIndex(product => product.id == productId);
     if (products[foundIndex].stock == true) {
-        cartProducts.push(products[foundIndex]);
-        console.log (`Agregaste "${products[foundIndex].title}" al carrito! :D`);
-        console.log (`Tenés ${cartProducts.length} productos en el carrito`);
-        const cartTotalAmount = cartProducts.reduce ((sum, product) => sum + product.price, 0);
-        document.getElementById('cart-string').innerHTML = `${cartProducts.length} - $${cartTotalAmount}`
+        cart.push(products[foundIndex]);
+        const cartTotalAmount = cart.reduce ((sum, product) => sum + product.price, 0);
+        document.getElementById('cart-string').innerHTML = `${cart.length} - $${cartTotalAmount}`
+        const cartJSON = JSON.stringify(cart)
+        localStorage.setItem('cart', cartJSON);
     } else {
         console.log(`No tenemos stock de "${products[foundIndex].title}" :/`)
     }
@@ -65,11 +71,13 @@ const addToCart = (productId) =>{
 
 // FUNCION ELIMINAR UN PRODUCTO DEL CARRTTO
 const removeFromCart = (cartProductId) => {
-    const foundIndexCart = cartProducts.findIndex(cartProduct => cartProduct.id == cartProductId);
+    const foundIndexCart = cart.findIndex(cartProduct => cartProduct.id == cartProductId);
     if (foundIndexCart != -1) {
-        console.log (`Eliminaste el producto del carrito... :(`);
-        cartProducts.splice(foundIndexCart,1);
-        console.log (`Tenés ${cartProducts.length} productos en el carrito`);
+        cart.splice(foundIndexCart,1);
+        const cartTotalAmount = cart.reduce ((sum, product) => sum + product.price, 0);
+        document.getElementById('cart-string').innerHTML = `${cart.length} - $${cartTotalAmount}`
+        const cartJSON = JSON.stringify(cart)
+        localStorage.setItem('cart', cartJSON);
     } else {
         console.log(`El producto que intentaste eliminar no estaba en tu carrito.`)
     }
@@ -94,10 +102,10 @@ const removeFromCart = (cartProductId) => {
 const btnShowCart = document.getElementById('btn_show-cart')
 btnShowCart.onclick = () => {
     console.log ('Estos son los productos que tenés en el carrito:');
-    cartProducts.forEach((product) => {
+    cart.forEach((product) => {
         console.log(`${product.title} - $${product.price}`)
     })
-    const cartTotalAmount = cartProducts.reduce ((sum, product) => sum + product.price, 0)
+    const cartTotalAmount = cart.reduce ((sum, product) => sum + product.price, 0)
     console.log (`El total de tu carrito es de $${cartTotalAmount}`)
 };
 
@@ -115,3 +123,14 @@ categoryCards.onclick = () => {filterByCategory('card')}
 
 const categoryFigures = document.getElementById('category_figures')
 categoryFigures.onclick = () => {filterByCategory('figure')}
+
+const categoryInStock = document.getElementById('category_in-stock')
+categoryInStock.onclick = () => {
+    const stockTrueArray = products.filter((product) => product.stock == true)
+    generateCards(stockTrueArray)
+}
+
+const botonPrueba = document.getElementById('boton_prueba')
+botonPrueba.onclick = () => {
+    document.getElementById('modal_prueba')
+}
