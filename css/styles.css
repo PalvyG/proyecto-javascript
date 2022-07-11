@@ -23,3 +23,32 @@
   font-weight: 500;
   margin-bottom: 5px;
 }
+
+#cartModalContent {
+  margin: 0 auto;
+  width: 80%;
+}
+
+.cart-modal_product_title {
+  font-size: large;
+}
+
+.cart-modal_product_price {
+  font-size: medium;
+}
+
+#cartTotalH5 {
+  margin-bottom: -5px;
+}
+
+.gap-10px {
+  gap: 10px;
+}
+
+.cart-modal_product {
+  height: 6vh;
+}
+
+.btn_remove-cart {
+  font-size: small;
+}

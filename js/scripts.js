@@ -29,7 +29,7 @@ document.getElementById('cart-string').innerHTML = `${cart.length} - $${cartTota
 const generateCards = (arrayFiltered) => {
     let generatorCards = ``;
     arrayFiltered.forEach((product) => {
-        generatorCards += `    <div class="col mb-5">
+        generatorCards += `    <div class="col-md-3 mb-5">
     <div class="card h-100">
         <!-- Product image-->
         <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
@@ -45,7 +45,6 @@ const generateCards = (arrayFiltered) => {
         <!-- Product actions-->
         <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
             <div class="text-center"><a class="btn btn-outline-dark mt-auto mb-2 btn_add-cart" href="#" onclick="addToCart(${product.id})">Agregar al carrito</a></div>
-            <div class="text-center"><a class="btn btn-outline-dark mt-auto btn_remove-cart" href="#" onclick="removeFromCart(${product.id})">Eliminar del carrito</a></div>
         </div>
     </div>
 </div>`;
@@ -54,60 +53,101 @@ const generateCards = (arrayFiltered) => {
 };
 generateCards(products);
 
-// FUNCION AGREGAR UN product AL CARRTTO
+// FUNCION ACTUALIZACION INDICE CARRITO (CANT. PROD. Y TOTAL EN $) Y SU ALMACENAMIENTO EN JSON
+const cartReduce = () => {
+    const cartTotalAmount = cart.reduce((sum, product) => sum + product.price, 0);
+    document.getElementById('cart-string').innerHTML = `${cart.length} - $${cartTotalAmount}`
+    const cartJSON = JSON.stringify(cart);
+    localStorage.setItem('cart', cartJSON);
+}
+
+// FUNCION AGREGAR UN PRODUCTO AL CARRTTO
 const addToCart = (productId) => {
     const foundIndex = products.findIndex(product => product.id == productId);
     if (products[foundIndex].stock == true) {
         cart.push(products[foundIndex]);
-        const cartTotalAmount = cart.reduce((sum, product) => sum + product.price, 0);
-        document.getElementById('cart-string').innerHTML = `${cart.length} - $${cartTotalAmount}`
-        const cartJSON = JSON.stringify(cart)
-        localStorage.setItem('cart', cartJSON);
+        Toastify({
+            text: "El producto fue agregado al carrito exitosamente! :D",
+            duration: 2500,
+        }).showToast();
+        cartReduce();
     } else {
-        console.log(`No tenemos stock de "${products[foundIndex].title}" :/`)
+        Toastify({
+            text: "Lo sentimos, no tenemos stock del producto solicitado. :(",
+            duration: 2500,
+            style: {
+                background: "linear-gradient(to right, #ff7152, #f12711)",
+            },
+        }).showToast();
     }
 };
-
 
 // FUNCION ELIMINAR UN PRODUCTO DEL CARRTTO
 const removeFromCart = (cartProductId) => {
     const foundIndexCart = cart.findIndex(cartProduct => cartProduct.id == cartProductId);
     if (foundIndexCart != -1) {
         cart.splice(foundIndexCart, 1);
-        const cartTotalAmount = cart.reduce((sum, product) => sum + product.price, 0);
-        document.getElementById('cart-string').innerHTML = `${cart.length} - $${cartTotalAmount}`
-        const cartJSON = JSON.stringify(cart)
-        localStorage.setItem('cart', cartJSON);
+        cartReduce();
+        generateCardsCart();
+        Toastify({
+            text: "El producto fue eliminado del carrito exitosamente. :(",
+            duration: 2500,
+        }).showToast();
     } else {
         console.log(`El producto que intentaste eliminar no estaba en tu carrito.`)
     }
 };
 
-
-//  TODO: FUNCION ORDENAR DE MAYOR A MENOR PRECIO
-/* const orderByPriceHigher = () => {
-    products.sort = () => {
-        
+// FUNCION BORRAR TODO EL CARRITO
+const btnRemoveAllCart = document.getElementById('btn_removeAllCart');
+btnRemoveAllCart.onclick = () => {
+    if (cart.length == 0) {
+        Toastify({
+            text: "El carrito está vacío!",
+            duration: 2500,
+            gravity: "bottom",
+            position: "center",
+            style: {
+                background: "linear-gradient(to right, #ff7152, #f12711)",
+            },
+        }).showToast();
+    } else {
+        cart.splice(0, cart.length);
+        cartReduce();
+        generateCardsCart();
+        Toastify({
+            text: "El carrito fue vaciado exitosamente. :(",
+            duration: 2500,
+            gravity: "bottom",
+            position: "center",
+            style: {
+                background: "linear-gradient(to right, #8E2DE2, #4A00E0)",
+            },
+        }).showToast();
     }
-}; */
-
-// TODO: FUNCION ORDENAR DE MENOR A MAYOR PRECIO
-/* const orderByPriceLower = () => {
-    products.sort = () => {
-        
-    }
-}; */
+}
 
 // FUNCION MOSTRAR PRODUCTOS EN EL CARRITO
-const btnShowCart = document.getElementById('btn_show-cart')
-btnShowCart.onclick = () => {
-    console.log('Estos son los productos que tenés en el carrito:');
+const generateCardsCart = () => {
+    let generatorCardsCart = ``;
     cart.forEach((product) => {
-        console.log(`${product.title} - $${product.price}`)
-    })
-    const cartTotalAmount = cart.reduce((sum, product) => sum + product.price, 0)
-    console.log(`El total de tu carrito es de $${cartTotalAmount}`)
+        generatorCardsCart += `
+        <div class='d-flex justify-content-between align-items-center cart-modal_product'>
+        <div><p class= 'cart-modal_product_title'>${product.title}</h5></div>
+        <div class='d-flex align-items-center gap-10px'><p class= 'cart-modal_product_price'>$${product.price}</p><a class="btn btn-outline-dark mt-n3 btn_remove-cart" href="#" onclick="removeFromCart(${product.id})"><i class="fa-solid fa-trash-can"></i></a></div>
+        </div>`;
+        }),
+    document.getElementById('cartModalProducts').innerHTML = generatorCardsCart;
+    const cartModalReduce = cart.reduce((sum, product) => sum + product.price, 0);
+    let cartModalTotalAmount = `<h5>$${cartModalReduce}</h5>`
+    document.getElementById('cartModalTotalAmount').innerHTML = cartModalTotalAmount;
 };
+
+const btnShowCart = document.getElementById('btn_show-cart');
+btnShowCart.onclick = () => {
+    generateCardsCart();
+}
+
 
 /* FUNCION FILTRAR POR CATEGORIAS */
 const filterByCategory = (category) => {
@@ -130,43 +170,45 @@ categoryInStock.onclick = () => {
     generateCards(stockTrueArray)
 }
 
+//  TODO: FUNCION ORDENAR DE MAYOR A MENOR PRECIO
+/* const orderByPriceHigher = () => {
+    products.sort = () => {
+        
+    }
+}; */
+
+// TODO: FUNCION ORDENAR DE MENOR A MAYOR PRECIO
+/* const orderByPriceLower = () => {
+    products.sort = () => {
+        
+    }
+}; */
+
 /* FUNCION VALIDACION DE CUENTA */
 const validateEmail = (email) => {
     return String(email)
-        .toLowerCase()
-        .match(
-            /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+    .toLowerCase()
+    .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
         );
-};
-
-const buttonEnableValidation = () => {
-    const accountEmailError = document.getElementById('emailError').innerHTML
-    const accountPasswordError = document.getElementById('passwordError').innerHTML
-    if (accountEmailError + accountPasswordError == '') {
-        buttonValidate.disabled = false;
-    } else {
-        buttonValidate.disabled = true;
+    };
+    
+    const buttonEnableValidation = () => {
+        const accountEmailError = document.getElementById('emailError').innerHTML
+        const accountPasswordError = document.getElementById('passwordError').innerHTML
+        accountEmailError + accountPasswordError == '' ? btnValidate.disabled = false : btnValidate.disabled = true;
     }
-}
-
-document.getElementById('accountEmail').onchange = (e) => {
-    const accountEmail = e.target.value
+    
+    document.getElementById('accountEmail').onchange = (e) => {
+        const accountEmail = e.target.value
     const isAccountEmailValid = validateEmail(accountEmail);
-    if (isAccountEmailValid) {
-        document.getElementById('emailError').innerHTML = ``
-    } else {
-        document.getElementById('emailError').innerHTML = `<p class="error_login">El correo electrónico es inválido.</p>`
-    }
+    isAccountEmailValid ? document.getElementById('emailError').innerHTML = `` : document.getElementById('emailError').innerHTML = `<p class="error_login">El correo electrónico es inválido.</p>`;
     buttonEnableValidation ();
 }
 
 document.getElementById('accountPassword').onchange = (e) => {
     const accountPassword = e.target.value
-    if (accountPassword.length >= 8) {
-        document.getElementById('passwordError').innerHTML = ``
-    } else {
-        document.getElementById('passwordError').innerHTML = `<p class="error_login">La contraseña debe contener 8 caracteres (mín).</p>`
-    }
+    accountPassword.length >= 8 ? document.getElementById('passwordError').innerHTML = `` : document.getElementById('passwordError').innerHTML = `<p class="error_login">La contraseña debe contener 8 caracteres (mín).</p>`;
     buttonEnableValidation ();
 }
 
@@ -177,17 +219,44 @@ const accountValidations = () => {
     if (isAccountEmailValid && accountPassword.length >= 8) {
         document.getElementById('emailError').innerHTML = ``
         document.getElementById('passwordError').innerHTML = ``
-        alert(`Se ha iniciado sesión con el correo "${accountEmail}" exitosamente.`)
+        Swal.fire({
+            title: '¡Bienvenido!',
+            text: `Sesión iniciada correctamente con el correo "${accountEmail}"`,
+            icon: 'success',
+            confirmButtonText: 'CERRAR'
+        })
         document.getElementById('accountModalLabel').innerHTML = 'Datos de la sesión'
         document.getElementById('accountModalBody').innerHTML = `<p>Sesión iniciada con el correo "${accountEmail}"</p>`
+        document.getElementById('btnValidate').hidden = true;
+        document.getElementById('btnCloseSession').hidden = false;
     } else if (isAccountEmailValid == false) {
-        document.getElementById('passwordError').innerHTML = `<p class="error_login">La contraseña debe contener 8 caracteres (mín).</p>`
-    } else if (accountPassword.length < 8) {
         document.getElementById('emailError').innerHTML = `<p class="error_login">El correo electrónico es inválido.</p>`
+    } else if (accountPassword.length < 8) {
+        document.getElementById('passwordError').innerHTML = `<p class="error_login">La contraseña debe contener 8 caracteres (mín).</p>`
     }
 }
 
-const buttonValidate = document.getElementById('buttonValidate')
-buttonValidate.onclick = () => {
+const btnValidate = document.getElementById('btnValidate')
+btnValidate.onclick = () => {
     accountValidations();
+}
+
+// FUNCIÓN CERRAR SESIÓN
+const btnCloseSession = document.getElementById('btnCloseSession');
+btnCloseSession.onclick = () => {
+    Swal.fire({
+        title: '¡Hasta pronto!',
+        text: `Has cerrado tu sesión.`,
+        icon: 'success',
+        confirmButtonText: 'CERRAR'
+    })
+    document.getElementById('accountModalLabel').innerHTML = 'Iniciar sesión'
+    document.getElementById('accountModalBody').innerHTML = `
+    <div id="emailError"></div>
+    <input class="modal_input" type="email" id="accountEmail" placeholder="E-Mail">
+    <div id="passwordError"></div>
+    <input class="modal_input" type="password" id="accountPassword" placeholder="Contraseña">
+    <p class="leyenda">Longitud mínima: 8 caracteres</p>`
+    document.getElementById('btnCloseSession').hidden = true;
+    document.getElementById('btnValidate').hidden = false;
 }
