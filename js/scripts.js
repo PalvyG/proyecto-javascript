@@ -10,7 +10,7 @@
 // CARRITO
 
 // ARRAY PRODUCTOS
-const products = [
+let products = [
     { id: 1, title: 'Funko Pop de Goku', price: 1500, stock: true, category: 'figure' },
     { id: 2, title: 'Carta de Charizard', price: 2000, stock: true, category: 'card' },
     { id: 3, title: 'Carta de Pikachu', price: 500, stock: false, category: 'card' },
@@ -32,7 +32,7 @@ const generateCards = (arrayFiltered) => {
         generatorCards += `    <div class="col-md-3 mb-5">
     <div class="card h-100">
         <!-- Product image-->
-        <img class="card-img-top" src="https://dummyimage.com/450x300/dee2e6/6c757d.jpg" alt="..." />
+        <img class="card-img-top" src="${product.thumbnail}" alt="..." />
         <!-- Product details-->
         <div class="card-body p-4">
             <div class="text-center">
@@ -51,7 +51,6 @@ const generateCards = (arrayFiltered) => {
     })
     document.getElementById('container-products').innerHTML = generatorCards;
 };
-generateCards(products);
 
 // FUNCION ACTUALIZACION INDICE CARRITO (CANT. PROD. Y TOTAL EN $) Y SU ALMACENAMIENTO EN JSON
 const cartReduce = () => {
@@ -260,3 +259,18 @@ btnCloseSession.onclick = () => {
     document.getElementById('btnCloseSession').hidden = true;
     document.getElementById('btnValidate').hidden = false;
 }
+
+// FECTH
+API_URL = 'https://api.mercadolibre.com'
+API_ENDPOINT_SEARCH_NICKNAME = '/sites/MLA/search?nickname='
+const fetchDataBase = () => {
+    fetch(API_URL + API_ENDPOINT_SEARCH_NICKNAME + 'JONATHANHANCCOHUAICOCHE')
+        .then((response) => response.json())
+        .then((data) => {
+            products = products.concat(data.results);
+            console.log(data);
+            generateCards(products);
+        })
+}
+
+fetchDataBase();
