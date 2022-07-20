@@ -29,7 +29,7 @@ document.getElementById('cart-string').innerHTML = `${cart.length} - $${cartTota
 const generateCards = (arrayFiltered) => {
     let generatorCards = ``;
     arrayFiltered.forEach((product) => {
-        generatorCards += `    <div class="col-md-3 mb-5">
+        generatorCards += `    <div class="card-responsive col mb-5">
     <div class="card h-100">
         <!-- Product image-->
         <img class="card-img-top" src="${product.thumbnail}" alt="..." />
@@ -51,6 +51,8 @@ const generateCards = (arrayFiltered) => {
     })
     document.getElementById('container-products').innerHTML = generatorCards;
 };
+
+
 
 // FUNCION ACTUALIZACION INDICE CARRITO (CANT. PROD. Y TOTAL EN $) Y SU ALMACENAMIENTO EN JSON
 const cartReduce = () => {
