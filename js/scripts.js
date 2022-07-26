@@ -135,7 +135,7 @@ const generateCardsCart = () => {
         generatorCardsCart += `
         <div class='d-flex justify-content-between align-items-center cart-modal_product'>
         <div><p class= 'cart-modal_product_title'>${product.title}</h5></div>
-        <div class='d-flex align-items-center gap-10px'><p class= 'cart-modal_product_price'>$${product.price}</p><a class="btn btn-outline-dark mt-n3 btn_remove-cart" href="#" onclick="removeFromCart(${product.id})"><i class="fa-solid fa-trash-can"></i></a></div>
+        <div class='d-flex align-items-center gap-10px'><p class= 'cart-modal_product_price'>$${product.price}</p><a class="btn btn-outline-dark mt-n3 btn_remove-cart" href="#" onclick="removeFromCart('${product.id}')"><i class="fa-solid fa-trash-can"></i></a></div>
         </div>`;
         }),
     document.getElementById('cartModalProducts').innerHTML = generatorCardsCart;
