@@ -30,7 +30,8 @@
 }
 
 .cart-modal_product_title {
-  font-size: large;
+  font-size: medium;
+  line-height: 20px;
 }
 
 .cart-modal_product_price {
@@ -46,7 +47,7 @@
 }
 
 .cart-modal_product {
-  height: 6vh;
+  height: 8vh;
 }
 
 .btn_remove-cart {

@@ -44,7 +44,7 @@ const generateCards = (arrayFiltered) => {
         </div>
         <!-- Product actions-->
         <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
-            <div class="text-center"><a class="btn btn-outline-dark mt-auto mb-2 btn_add-cart" href="#" onclick="addToCart(${product.id})">Agregar al carrito</a></div>
+            <div class="text-center"><a class="btn btn-outline-dark mt-auto mb-2 btn_add-cart" href="#" onclick="addToCart('${product.id}')">Agregar al carrito</a></div>
         </div>
     </div>
 </div>`;
@@ -269,7 +269,11 @@ const fetchDataBase = () => {
     fetch(API_URL + API_ENDPOINT_SEARCH_NICKNAME + 'FVENTAS+ONCE')
         .then((response) => response.json())
         .then((data) => {
-            products = products.concat(data.results);
+            productsML = data.results;
+            productsML.forEach ((product) => {
+                product.stock = true
+            })
+            products = products.concat(productsML);
             console.log(data);
             generateCards(products);
         })
