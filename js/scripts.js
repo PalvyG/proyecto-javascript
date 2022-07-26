@@ -266,7 +266,7 @@ btnCloseSession.onclick = () => {
 API_URL = 'https://api.mercadolibre.com'
 API_ENDPOINT_SEARCH_NICKNAME = '/sites/MLA/search?nickname='
 const fetchDataBase = () => {
-    fetch(API_URL + API_ENDPOINT_SEARCH_NICKNAME + 'JONATHANHANCCOHUAICOCHE')
+    fetch(API_URL + API_ENDPOINT_SEARCH_NICKNAME + 'FVENTAS+ONCE')
         .then((response) => response.json())
         .then((data) => {
             products = products.concat(data.results);
