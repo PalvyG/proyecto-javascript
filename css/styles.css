@@ -1,3 +1,33 @@
+body {
+  background-image: url(../img/subtle-prism.svg);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+.navbar {
+  background: rgb(255,190,0);
+  background: linear-gradient(90deg, rgba(255,190,0,1) 0%, rgba(145,218,41,1) 73%, rgba(0,255,95,1) 100%);
+}
+
+.navbar button {
+  background: #ffffff;
+}
+
+header {
+  background:
+    linear-gradient(
+      rgba(0, 0, 0, 0.8), 
+      rgba(0, 0, 0, 0.8)
+    ),
+    url(https://culturageek.com.ar/wp-content/uploads/2016/02/funkopopbanner.jpg);
+  background-position: center;
+}
+
+.fontcolor-white {
+  color: #ffffff !important;
+  font-weight: 400;
+}
+
 #marginleft {
   margin-left: 10px;
 }
@@ -52,6 +82,14 @@
 
 .btn_remove-cart {
   font-size: small;
+}
+
+.card {
+  border-radius: 10px;
+}
+
+.card img {
+  border-radius: 10px;
 }
 
 @media screen and (min-width: 992px) {

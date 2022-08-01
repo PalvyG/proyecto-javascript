@@ -11,10 +11,10 @@
 
 // ARRAY PRODUCTOS
 let products = [
-    { id: 1, title: 'Funko Pop de Goku', price: 1500, stock: true, category: 'figure' },
-    { id: 2, title: 'Carta de Charizard', price: 2000, stock: true, category: 'card' },
-    { id: 3, title: 'Carta de Pikachu', price: 500, stock: false, category: 'card' },
-    { id: 4, title: 'Figura a escala de Broly', price: 4000, stock: true, category: 'figure' }
+    { id: 1, title: 'Funko Pop de Pikachu', price: 1500, stock: true, category: 'figure', thumbnail: "https://http2.mlstatic.com/D_NQ_NP_795834-MLA48341511152_112021-O.webp" },
+    { id: 2, title: 'Carta de Charizard', price: 2000, stock: true, category: 'card', thumbnail: "https://www.cardtrader.com/uploads/blueprints/image/153134/charizard-vmax-rare-shiny-sv107-shining-fates.png" },
+    { id: 3, title: 'Carta de Gogeta', price: 500, stock: false, category: 'card', thumbnail: "https://static.cardmarket.com/img/d05e9d335f68f97387e358e0c75c6dad/items/1049/BT11/488149.jpg" },
+    { id: 4, title: 'Figura a escala de Broly', price: 4000, stock: true, category: 'figure', thumbnail: "https://d3nt9em9l1urz8.cloudfront.net/media/catalog/product/cache/3/image/9df78eab33525d08d6e5fb8d27136e95/b/z/bzbp35705_1.jpg" }
 ];
 
 const cartStorage = localStorage.getItem('cart');
@@ -34,17 +34,18 @@ const generateCards = (arrayFiltered) => {
         <!-- Product image-->
         <img class="card-img-top" src="${product.thumbnail}" alt="..." />
         <!-- Product details-->
-        <div class="card-body p-4">
+        <div class="card-body p-2">
             <div class="text-center">
                 <!-- Product name-->
-                <h5 class="fw-bolder">${product.title}</h5>
+                <h5 class="fw-bolder product-title">${product.title}</h5>
                 <!-- Product price-->
                 $${product.price}
             </div>
         </div>
         <!-- Product actions-->
-        <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+        <div class="card-footer p-2 pt-0 border-top-0 bg-transparent">
             <div class="text-center"><a class="btn btn-outline-dark mt-auto mb-2 btn_add-cart" href="#" onclick="addToCart('${product.id}')">Agregar al carrito</a></div>
+            <div class="text-center"><a class="btn btn-outline-dark mt-auto mb-2 btn_show-details" data-toggle="modal" data-target="#productModal" href="#">Ver detalles</a></div>
         </div>
     </div>
 </div>`;
@@ -52,7 +53,37 @@ const generateCards = (arrayFiltered) => {
     document.getElementById('container-products').innerHTML = generatorCards;
 };
 
-
+// TODO: FUNCION MOSTRAR DETALLE PRODUCTO
+/* const showDetails = () => {
+    let btnArray = document.getElementsByClassName("btn_show-details");
+    for (let i=0; i < btnArray.length; i++) {
+        btnArray[i].onclick = () => {
+            let productDetails =
+            `<div class="modal-dialog" role="document">
+            <div class="modal-content" id="cartModalContent">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cartModalLabel">${document.getElementsByClassName("product-title")[0].innerHTML}</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" id="cartModalBody">
+                    <div id="cartModalProducts"></div>
+                    <div class="d-flex justify-content-between">
+                        <div id="cartTotalH5"><h5>Total:</h5></div>
+                        <div id="cartModalTotalAmount"></div>
+                    </div>
+                </div>
+                <div class="modal-footer" id="cartModalFooter">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary">Agregar <i class="bi-cart-fill me-1"></i></button>
+                </div>
+            </div>
+        </div>`;
+        document.getElementById("productModal").innerHTML = productDetails;
+        }
+    };
+}; */
 
 // FUNCION ACTUALIZACION INDICE CARRITO (CANT. PROD. Y TOTAL EN $) Y SU ALMACENAMIENTO EN JSON
 const cartReduce = () => {
@@ -171,19 +202,19 @@ categoryInStock.onclick = () => {
     generateCards(stockTrueArray)
 }
 
-//  TODO: FUNCION ORDENAR DE MAYOR A MENOR PRECIO
-/* const orderByPriceHigher = () => {
-    products.sort = () => {
-        
-    }
-}; */
+// FUNCION ORDENAR DE MAYOR A MENOR PRECIO
+const orderByPriceHigher = document.getElementById('price_higher')
+orderByPriceHigher.onclick = () => {
+    products.sort((a,b) => (a.price < b.price ? 1 : -1));
+    generateCards(products)
+};
 
-// TODO: FUNCION ORDENAR DE MENOR A MAYOR PRECIO
-/* const orderByPriceLower = () => {
-    products.sort = () => {
-        
-    }
-}; */
+// FUNCION ORDENAR DE MENOR A MAYOR PRECIO
+const orderByPriceLower = document.getElementById('price_lower')
+orderByPriceLower.onclick = () => {
+    products.sort((a,b) => (a.price > b.price ? 1 : -1));
+    generateCards(products)
+};
 
 /* FUNCION VALIDACION DE CUENTA */
 const validateEmail = (email) => {
@@ -276,7 +307,9 @@ const fetchDataBase = () => {
             products = products.concat(productsML);
             console.log(data);
             generateCards(products);
+            showDetails();
         })
 }
 
 fetchDataBase();
+
