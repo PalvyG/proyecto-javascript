@@ -44,8 +44,7 @@ const generateCards = (arrayFiltered) => {
         </div>
         <!-- Product actions-->
         <div class="card-footer p-2 pt-0 border-top-0 bg-transparent">
-            <div class="text-center"><a class="btn btn-outline-dark mt-auto mb-2 btn_add-cart" href="#" onclick="addToCart('${product.id}')">Agregar al carrito</a></div>
-            <div class="text-center"><a class="btn btn-outline-dark mt-auto mb-2 btn_show-details" data-toggle="modal" data-target="#productModal" href="#">Ver detalles</a></div>
+            <div class="text-center"><a class="btn btn-outline-dark mt-auto mb-2 btn_add-cart" href="#" onclick="addToCart('${product.id}')">Agregar <i class="bi-cart-fill me-1"></i></a></div>
         </div>
     </div>
 </div>`;
@@ -53,7 +52,12 @@ const generateCards = (arrayFiltered) => {
     document.getElementById('container-products').innerHTML = generatorCards;
 };
 
+
 // TODO: FUNCION MOSTRAR DETALLE PRODUCTO
+
+// Agregar esta línea de código al generador de cards
+/* <div class="text-center"><a class="btn btn-outline-dark mt-auto mb-2 btn_show-details" data-toggle="modal" data-target="#productModal" href="#">Ver detalles</a></div> */
+
 /* const showDetails = () => {
     let btnArray = document.getElementsByClassName("btn_show-details");
     for (let i=0; i < btnArray.length; i++) {

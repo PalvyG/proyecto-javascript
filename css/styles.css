@@ -99,7 +99,13 @@ header {
 }
 
 @media screen and (min-width: 510px) and (max-width:991px) {
-  .card-responsive {
-    min-width: 200px;
+  .card{
+    min-width: 200px !important;
+  }
+}
+
+@media screen and (min-width: 50px) and (max-width:509px) {
+  .card {
+    min-width: 125px !important;
   }
 }
